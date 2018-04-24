@@ -69,8 +69,7 @@ public class Simulation {
             	automail.robot2.behaviour.priorityArrival(priority.getPriorityLevel(), priority.weight);
             }
             try {
-				automail.robot1.step();
-				automail.robot2.step();
+                automail.stepAllRobots();
 			} catch (ExcessiveDeliveryException|ItemTooHeavyException e) {
 				e.printStackTrace();
 				System.out.println("Simulation unable to complete.");

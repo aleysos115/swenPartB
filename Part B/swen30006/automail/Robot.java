@@ -126,7 +126,7 @@ public class Robot {
     /**
      * Sets the route for the robot
      */
-    private void setRoute() throws ItemTooHeavyException{
+    public void setRoute() throws ItemTooHeavyException{
         /** Pop the item from the StorageUnit */
         deliveryItem = tube.pop();
         if (!strong && deliveryItem.weight > 2000) throw new ItemTooHeavyException(); 
@@ -138,7 +138,7 @@ public class Robot {
      * Generic function that moves the robot towards the destination
      * @param destination the floor towards which the robot is moving
      */
-    private void moveTowards(int destination){
+    public void moveTowards(int destination){
         if(current_floor < destination){
             current_floor++;
         }
@@ -160,6 +160,47 @@ public class Robot {
             System.out.printf("T: %3d > %11s-> [%s]%n", Clock.Time(), id, deliveryItem.toString());
     	}
     }
-    
 
+
+
+
+
+    // getters
+    public int getCurrent_floor() {
+        return current_floor;
+    }
+
+
+    public StorageTube getTube() {
+        return tube;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public MailItem getDeliveryItem() {
+        return deliveryItem;
+    }
+
+    public boolean isStrong() {
+        return strong;
+    }
+
+
+    public int getDeliveryCounter() {
+        return deliveryCounter;
+    }
+
+    public void setDeliveryCounter(int deliveryCounter) {
+        this.deliveryCounter = deliveryCounter;
+    }
+
+    public IRobotBehaviour getBehaviour() {
+        return behaviour;
+    }
+
+    public int getDestination_floor() {
+        return destination_floor;
+    }
 }
