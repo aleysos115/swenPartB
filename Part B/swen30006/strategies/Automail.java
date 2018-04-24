@@ -131,5 +131,11 @@ public class Automail {
 			System.out.printf("T: %3d > %11s-> [%s]%n", Clock.Time(), robot.getId(), robot.getDeliveryItem().toString());
 		}
 	}
+
+
+	public void priorityArrival(PriorityMailItem priority) {
+		robot1.priorityArrival(priority);
+		robot2.priorityArrival(priority);
+	}
     
 }

@@ -164,6 +164,11 @@ public class Robot {
 
 
 
+    public void priorityArrival(PriorityMailItem priority) {
+        behaviour.priorityArrival(priority.getPriorityLevel(), priority.weight);
+    }
+
+
 
     // getters
     public int getCurrent_floor() {

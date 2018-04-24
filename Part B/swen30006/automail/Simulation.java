@@ -65,8 +65,7 @@ public class Simulation {
         	//System.out.println("-- Step: "+Clock.Time());
             priority = generator.step();
             if (priority != null) {
-            	automail.robot1.behaviour.priorityArrival(priority.getPriorityLevel(), priority.weight);
-            	automail.robot2.behaviour.priorityArrival(priority.getPriorityLevel(), priority.weight);
+            	automail.priorityArrival(priority);
             }
             try {
                 automail.stepAllRobots();
