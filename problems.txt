@@ -1,0 +1,22 @@
+Improvements:
+- adding to mail pool, not being sorted 
+- filling storage tube, not grouped or ordered
+- why is only strong robot delivering priority mail?
+- return to mail room only if new item will incur greater penalty than robot finishes delivery 
+- priorityArrival in robot behaviour has weight passed in too but not used
+- robot 'want to return' is commented out
+
+Refactor:
+- more meaningful variable names: mailpool, 
+- proper spacings
+- getRandom in MailGenerator never used, remove it
+- mail generator step() name not informative
+- simulation main function long, maybe take out the code that moves robots (while loop)
+- robot step function is large, split each case into 3 functions
+
+
+Design flaws:
+- Automail set up as observer for robot states, one for delivery to get rid of link between robot and ReportDelivery, and the other for returning, so items left in storagetube can be added back to mailpool, "observer pattern"
+- Moving all methods from Robot into robotbehaviour to help decouple the robot from everything, "information expert" "cohesion" "decoupling"
+- Removing link between robot and mailitem, instead asks storage tube for next item to deliver, "indirection"
+- Putting robots in list and looping through them sensibly, "refactoring"
