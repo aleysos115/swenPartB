@@ -12,6 +12,7 @@ public class StorageTube {
 
     public final int MAXIMUM_CAPACITY = 4;
     public Stack<MailItem> tube;
+    private MailItem deliveryItem;
 
     /**
      * Constructor for the storage tube
@@ -65,5 +66,15 @@ public class StorageTube {
     public MailItem pop(){
         return tube.pop();
     }
+
+
+    public MailItem getDeliveryItem(boolean newItem) {
+        if (newItem) {
+            deliveryItem = pop();
+        }
+        return deliveryItem;
+    }
+
+
 
 }
