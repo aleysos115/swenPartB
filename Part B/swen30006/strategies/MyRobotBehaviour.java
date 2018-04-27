@@ -38,5 +38,4 @@ public class MyRobotBehaviour implements IRobotBehaviour {
 			return strong && newPriority > tubePriority(tube);
 		}
 	}
-	
 }
