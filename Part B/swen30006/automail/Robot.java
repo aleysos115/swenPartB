@@ -29,7 +29,7 @@ public class Robot {
      * Initiates the robot's location at the start to be at the mailroom
      * also set it to be waiting for mail.
      * @param behaviour governs selection of mail items for delivery and behaviour on priority arrivals
-     * @param strong is whether the robot can carry heavy items
+     * @param type the type of the robot, weak strong or big
      */
     public Robot(IRobotBehaviour behaviour, RobotType type){
     	id = "R" + hashCode();
@@ -91,7 +91,9 @@ public class Robot {
         behaviour.priorityArrival(priority.getPriorityLevel(), priority.weight);
     }
 
-
+    public String getId() {
+        return id;
+    }
 
     public MailItem getDeliveryItem() {
         return tube.getDeliveryItem(false);
