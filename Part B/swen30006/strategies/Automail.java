@@ -2,30 +2,30 @@ package strategies;
 
 import automail.*;
 import exceptions.ExcessiveDeliveryException;
+import exceptions.InvalidConfigurationException;
 import exceptions.ItemTooHeavyException;
 
 public class Automail {
 	      
     public Robot robot1, robot2;
     public IMailPool mailPool;
-
-
     private IMailDelivery delivery;
-    
-    public Automail(IMailDelivery delivery) {
-    	// Swap between simple provided strategies and your strategies here
 
+
+    public Automail(IMailDelivery delivery, String robot1TypeString, String robot2TypeString){
+    	// Swap between simple provided strategies and your strategies here
     	this.delivery = delivery;
 
+    	Robot.RobotType robot1Type = parseTypeFromString(robot1TypeString);
+		Robot.RobotType robot2Type = parseTypeFromString(robot2TypeString);
 
-
-		createRobotsAndMailPool(Robot.RobotType.STRONG, Robot.RobotType.WEAK);
+		createRobotsAndMailPool(robot1Type, robot2Type);
     }
 
 
 
 
-    public void stepAllRobots() throws ItemTooHeavyException, ExcessiveDeliveryException {
+    public void step() throws ItemTooHeavyException, ExcessiveDeliveryException {
     	robot1.step(mailPool, delivery);
 		robot2.step(mailPool, delivery);
 	}
@@ -40,8 +40,10 @@ public class Automail {
 	}
 
 
-
-	public void createRobotsAndMailPool(Robot.RobotType robot1Type, Robot.RobotType robot2Type) {
+	/**
+	 * Create robots and mailpool with robot types
+	 */
+	public void createRobotsAndMailPool(Robot.RobotType robot1Type, Robot.RobotType robot2Type){
 		/** Initialize the RobotAction */
 		IRobotBehaviour robotBehaviour1 = new MyRobotBehaviour(robot1Type);
 		IRobotBehaviour robotBehaviour2 = new MyRobotBehaviour(robot2Type);
@@ -54,9 +56,30 @@ public class Automail {
 
 
 		/** Initialize the MailPool */
-		// a configuration of a strong and a weak robot
 		Configuration config = new Configuration(robot1, robot2);
-		mailPool = new MyMailPool(config);
+		try {
+			mailPool = new MyMailPool(config);
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
 	}
+
+
+	// parse robot type enum from string
+	private Robot.RobotType parseTypeFromString(String typeString) {
+		Robot.RobotType type = null;
+		switch (typeString) {
+			case "weak":
+				type = Robot.RobotType.WEAK;
+				break;
+			case "strong":
+				type = Robot.RobotType.STRONG;
+				break;
+			case "big":
+				type = Robot.RobotType.BIG;
+		}
+		return type;
+	}
+
     
 }

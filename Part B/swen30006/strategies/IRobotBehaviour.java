@@ -6,13 +6,15 @@ import exceptions.ExcessiveDeliveryException;
 import exceptions.ItemTooHeavyException;
 
 public interface IRobotBehaviour {
-	
+
+    int MAX_WEIGHT_FOR_WEAK = 2000;
+
 	/**
 	 * startDelivery() provides the robot the opportunity to initialise state
 	 * in support of the other methods below. 
 	 */
 	
-	public void startDelivery();
+	void startDelivery();
 	
 	/** 
 	 * @param tube refers to the pack the robot uses to deliver mail.
@@ -21,7 +23,7 @@ public interface IRobotBehaviour {
 	 * This method allows the robot to return with items still in the tube,
 	 * if circumstances make this desirable.
 	 */
-    public boolean returnToMailRoom(StorageTube tube);
+    boolean returnToMailRoom(StorageTube tube);
     
     /**
      * @param priority is that of the priority mail item which just arrived.
@@ -29,17 +31,17 @@ public interface IRobotBehaviour {
      * The automail system broadcasts this information to all robots
      * when a new priority mail items arrives at the building.
      */
-    public void priorityArrival(int priority, int weight);
+    void priorityArrival(int priority, int weight);
     
-    public default void setRoute(Robot robot) throws ItemTooHeavyException{
+    default void setRoute(Robot robot) throws ItemTooHeavyException{
         /** Pop the item from the StorageUnit */
         robot.getTube().getDeliveryItem(true);
-        if ((robot.getType() == Robot.RobotType.WEAK) && robot.getTube().getDeliveryItem(false).getWeight() > 2000) throw new ItemTooHeavyException();
+        if ((robot.getType() == Robot.RobotType.WEAK) && robot.getTube().getDeliveryItem(false).getWeight() > MAX_WEIGHT_FOR_WEAK) throw new ItemTooHeavyException();
         /** Set the destination floor */
         robot.setDestinationFloor(robot.getTube().getDeliveryItem(false).getDestFloor());
     }
     
-    public default void moveTowards(Robot robot, int destination){
+    default void moveTowards(Robot robot, int destination){
         if(robot.getCurrentFloor() < destination){
             robot.setCurrentFloor(robot.getCurrentFloor() + 1);
         }
@@ -48,7 +50,7 @@ public interface IRobotBehaviour {
         }
     }
     
-    public default void step(IMailPool mailPool, IMailDelivery delivery, Robot robot) throws ExcessiveDeliveryException, ItemTooHeavyException {
+    default void step(IMailPool mailPool, IMailDelivery delivery, Robot robot) throws ExcessiveDeliveryException, ItemTooHeavyException {
     	StorageTube tube = robot.getTube();
     	switch(robot.getState()) {
             /** This state is triggered when the robot is returning to the mailroom after a delivery */

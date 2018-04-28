@@ -1,10 +1,12 @@
 package automail;
 
 import exceptions.ExcessiveDeliveryException;
+import exceptions.InvalidConfigurationException;
 import exceptions.ItemTooHeavyException;
 import exceptions.MailAlreadyDeliveredException;
 import strategies.Automail;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,14 +19,13 @@ import java.util.Properties;
 public class Simulation {
 
     /** Constant for the mail generator */
-    private static final int MAIL_TO_CREATE = 180;
-    
-
     private static ArrayList<MailItem> MAIL_DELIVERED;
     private static double total_score = 0;
+    private static float DELIVERY_PENALTY;
 
-    public static void main(String[] args) { //throws IOException {
- /*   	// Should probably be using properties here
+
+    public static void main(String[] args) throws InvalidConfigurationException { //throws IOException {
+    	// Should probably be using properties here
     	Properties automailProperties = new Properties();
 		// Defaults
 		automailProperties.setProperty("Name_of_Property", "20");  // Property value may need to be converted from a string to the appropriate type
@@ -34,28 +35,40 @@ public class Simulation {
 		try {
 			inStream = new FileReader("automail.properties");
 			automailProperties.load(inStream);
-		} finally {
+		} catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
 			 if (inStream != null) {
-	                inStream.close();
-	            }
+                 try {
+                     inStream.close();
+                 } catch (IOException e) {
+                     e.printStackTrace();
+                 }
+             }
 		}
-		
-		int i = Integer.parseInt(automailProperties.getProperty("Name_of_Property"));
-*/
+
+
+		/* properties */
+        int SEED = Integer.parseInt(automailProperties.getProperty("Seed"));
+        Building.FLOORS = Integer.parseInt(automailProperties.getProperty("Number_of_Floors"));
+        DELIVERY_PENALTY = Float.parseFloat(automailProperties.getProperty("Delivery_Penalty"));
+        Clock.LAST_DELIVERY_TIME = Integer.parseInt(automailProperties.getProperty("Last_Delivery_Time"));
+        int MAIL_TO_CREATE = Integer.parseInt(automailProperties.getProperty("Mail_to_Create"));
+        String ROBOT_TYPE_1 = automailProperties.getProperty("Robot_Type_1");
+        String ROBOT_TYPE_2 = automailProperties.getProperty("Robot_Type_2");
+
+
 
         MAIL_DELIVERED = new ArrayList<MailItem>();
                 
         /** Used to see whether a seed is initialized or not */
         HashMap<Boolean, Integer> seedMap = new HashMap<>();
-        
-        /** Read the first argument and save it as a seed if it exists */
-        if(args.length != 0){
-        	int seed = Integer.parseInt(args[0]);
-        	seedMap.put(true, seed);
-        } else{
-        	seedMap.put(false, 0);
-        }
-        Automail automail = new Automail(new ReportDelivery());
+
+        seedMap.put(true, SEED);
+
+        Automail automail = new Automail(new ReportDelivery(), ROBOT_TYPE_1, ROBOT_TYPE_2);
         MailGenerator generator = new MailGenerator(MAIL_TO_CREATE, automail.mailPool, seedMap);
         
         /** Initiate all the mail */
@@ -68,7 +81,7 @@ public class Simulation {
             	automail.priorityArrival(priority);
             }
             try {
-                automail.stepAllRobots();
+                automail.step();
 			} catch (ExcessiveDeliveryException|ItemTooHeavyException e) {
 				e.printStackTrace();
 				System.out.println("Simulation unable to complete.");
@@ -99,16 +112,18 @@ public class Simulation {
     	}
 
     }
-    
+
+
+
+
     private static double calculateDeliveryScore(MailItem deliveryItem) {
     	// Penalty for longer delivery times
-    	final double penalty = 1.1;
     	double priority_weight = 0;
         // Take (delivery time - arrivalTime)**penalty * (1+sqrt(priority_weight))
     	if(deliveryItem instanceof PriorityMailItem){
     		priority_weight = ((PriorityMailItem) deliveryItem).getPriorityLevel();
     	}
-        return Math.pow(Clock.Time() - deliveryItem.getArrivalTime(),penalty)*(1+Math.sqrt(priority_weight));
+        return Math.pow(Clock.Time() - deliveryItem.getArrivalTime(),DELIVERY_PENALTY)*(1+Math.sqrt(priority_weight));
     }
 
     public static void printResults(){

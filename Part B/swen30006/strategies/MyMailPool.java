@@ -3,6 +3,7 @@ package strategies;
 import java.util.*;
 
 import automail.*;
+import exceptions.InvalidConfigurationException;
 import exceptions.TubeFullException;
 
 public class MyMailPool implements IMailPool{
@@ -18,7 +19,7 @@ public class MyMailPool implements IMailPool{
 	private int MAX_WEIGHT;
 
 
-	public MyMailPool(Configuration config){
+	public MyMailPool(Configuration config) throws InvalidConfigurationException {
 		// Start empty
 		upper = new LinkedList<MailItem>();
 		lower = new LinkedList<MailItem>();
@@ -42,7 +43,7 @@ public class MyMailPool implements IMailPool{
 
 			if (config.getRobot2Type() == Robot.RobotType.WEAK) {
 				/* Two weak robots is considered an invalid configuration. */
-				return;
+				throw new InvalidConfigurationException();
 			} else {
 				// strong or big
 				map.put(config.getRobot2Id(), lower);

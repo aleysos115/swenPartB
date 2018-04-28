@@ -50,6 +50,13 @@ public class Robot {
     public void step(IMailPool mailPool, IMailDelivery delivery) throws ExcessiveDeliveryException, ItemTooHeavyException {
         behaviour.step(mailPool, delivery, this);
     }
+
+    public void priorityArrival(PriorityMailItem priority) {
+        behaviour.priorityArrival(priority.getPriorityLevel(), priority.weight);
+    }
+
+
+    // getters and setters
     
     public StorageTube getTube() {
     	return tube;
@@ -58,6 +65,7 @@ public class Robot {
     public int getCurrentFloor() {
     	return current_floor;
     }
+
     public void setCurrentFloor(int floor) {
     	current_floor = floor;
     }
@@ -65,6 +73,7 @@ public class Robot {
     public int getDestinationFloor() {
     	return destination_floor;
     }
+
     public void setDestinationFloor(int floor) {
     	destination_floor = floor;
     }
@@ -72,6 +81,7 @@ public class Robot {
     public RobotState getState() {
     	return current_state;
     }
+
     public void setState(RobotState state) {
     	current_state = state;
     }
@@ -83,12 +93,9 @@ public class Robot {
     public int getDeliveryCounter() {
     	return deliveryCounter;
     }
+
     public void setDeliveryCounter(int counter) {
     	deliveryCounter = counter;
-    }
-    
-    public void priorityArrival(PriorityMailItem priority) {
-        behaviour.priorityArrival(priority.getPriorityLevel(), priority.weight);
     }
 
     public String getId() {
