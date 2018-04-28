@@ -1,16 +1,17 @@
 package strategies;
-import automail.Clock;
-import automail.MailItem;
-import automail.PriorityMailItem;
-import automail.StorageTube;
+import automail.*;
 
 public class MyRobotBehaviour implements IRobotBehaviour {
 	
-	private boolean strong;
+	private boolean strongOrBig;
 	private int newPriority; // Used if we are notified that a priority item has arrived. 
 		
-	public MyRobotBehaviour(boolean strong) {
-		this.strong = strong;
+	public MyRobotBehaviour(Robot.RobotType type) {
+		if (type == Robot.RobotType.WEAK) {
+			this.strongOrBig = false;
+		} else {
+			this.strongOrBig = true;
+		}
 		newPriority = 0;
 	}
 	
@@ -20,7 +21,7 @@ public class MyRobotBehaviour implements IRobotBehaviour {
 	
 	@Override
     public void priorityArrival(int priority, int weight) {
-    	if (priority > newPriority) newPriority = priority;  // Only the strong robot will deliver priority items so weight of no interest
+    	if (priority > newPriority) newPriority = priority;  // Only the strongOrBig robot will deliver priority items so weight of no interest
     }
  
 	private int tubePriority(StorageTube tube) {  // Assumes at least one item in tube
@@ -33,9 +34,9 @@ public class MyRobotBehaviour implements IRobotBehaviour {
 		if (tube.isEmpty()) {
 			return false; // Empty tube means we are returning anyway
 		} else {
-			// Return true for the strong robot if the one waiting is higher priority than the one we have
+			// Return true for the strongOrBig robot if the one waiting is higher priority than the one we have
 			// Assumes that the one at the top of the tube has the highest priority
-			return strong && newPriority > tubePriority(tube);
+			return strongOrBig && newPriority > tubePriority(tube);
 		}
 	}
 }

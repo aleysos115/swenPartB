@@ -10,8 +10,8 @@ import strategies.IRobotBehaviour;
  */
 public class Robot {
 
-	StorageTube tube;
-    IRobotBehaviour behaviour;
+	private StorageTube tube;
+    private IRobotBehaviour behaviour;
     protected final String id;
     /** Possible states the robot can be in */
     public enum RobotState { DELIVERING, WAITING, RETURNING }

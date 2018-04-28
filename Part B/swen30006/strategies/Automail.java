@@ -17,25 +17,9 @@ public class Automail {
 
     	this.delivery = delivery;
 
-        /** Initialize the RobotAction */
-    	boolean weak = false;  // Can't handle more than 2000 grams
-    	boolean strong = true; // Can handle any weight that arrives at the building
-    	
-    	//// Swap the next two lines for the two below those
-    	IRobotBehaviour robotBehaviourW = new MyRobotBehaviour(weak);
-    	IRobotBehaviour robotBehaviourS = new MyRobotBehaviour(strong);
 
 
-
-    	/** Initialize robot */
-    	robot1 = new Robot(robotBehaviourW, Robot.RobotType.WEAK); /* shared behaviour because identical and stateless */
-    	robot2 = new Robot(robotBehaviourS, Robot.RobotType.STRONG);
-
-
-		/** Initialize the MailPool */
-		// a configuration of a strong and a weak robot
-		Configuration config = new Configuration(robot1, robot2);
-		mailPool = new MyMailPool(config);
+		createRobotsAndMailPool(Robot.RobotType.STRONG, Robot.RobotType.WEAK);
     }
 
 
@@ -53,6 +37,26 @@ public class Automail {
 	public void priorityArrival(PriorityMailItem priority) {
 		robot1.priorityArrival(priority);
 		robot2.priorityArrival(priority);
+	}
+
+
+
+	public void createRobotsAndMailPool(Robot.RobotType robot1Type, Robot.RobotType robot2Type) {
+		/** Initialize the RobotAction */
+		IRobotBehaviour robotBehaviour1 = new MyRobotBehaviour(robot1Type);
+		IRobotBehaviour robotBehaviour2 = new MyRobotBehaviour(robot2Type);
+
+
+
+		/** Initialize robot */
+		robot1 = new Robot(robotBehaviour1, robot1Type); /* shared behaviour because identical and stateless */
+		robot2 = new Robot(robotBehaviour2, robot2Type);
+
+
+		/** Initialize the MailPool */
+		// a configuration of a strong and a weak robot
+		Configuration config = new Configuration(robot1, robot2);
+		mailPool = new MyMailPool(config);
 	}
     
 }

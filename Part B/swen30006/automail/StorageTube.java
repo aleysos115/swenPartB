@@ -85,5 +85,7 @@ public class StorageTube {
     }
 
 
-
+    public int getCapacity() {
+        return MAXIMUM_CAPACITY;
+    }
 }

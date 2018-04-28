@@ -34,7 +34,7 @@ public interface IRobotBehaviour {
     public default void setRoute(Robot robot) throws ItemTooHeavyException{
         /** Pop the item from the StorageUnit */
         robot.getTube().getDeliveryItem(true);
-        if ((robot.getType()!= Robot.RobotType.STRONG) && robot.getTube().getDeliveryItem(false).getWeight() > 2000) throw new ItemTooHeavyException();
+        if ((robot.getType() == Robot.RobotType.WEAK) && robot.getTube().getDeliveryItem(false).getWeight() > 2000) throw new ItemTooHeavyException();
         /** Set the destination floor */
         robot.setDestinationFloor(robot.getTube().getDeliveryItem(false).getDestFloor());
     }
@@ -85,7 +85,7 @@ public interface IRobotBehaviour {
                     /** Delivery complete, report this to the simulator! */
                     delivery.deliver(robot.getDeliveryItem());
                     robot.setDeliveryCounter(robot.getDeliveryCounter() + 1);
-                    if(robot.getDeliveryCounter() > 4){
+                    if(robot.getDeliveryCounter() > robot.getTube().getCapacity()){
                         throw new ExcessiveDeliveryException();
                     }
                     /** Check if want to return or if there are more items in the tube*/
