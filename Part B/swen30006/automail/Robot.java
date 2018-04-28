@@ -36,7 +36,7 @@ public class Robot {
         // current_state = RobotState.WAITING;
     	current_state = RobotState.RETURNING;
         current_floor = Building.MAILROOM_LOCATION;
-        tube = new StorageTube();
+        tube = new StorageTube(type);
         this.behaviour = behaviour;
         this.type = type;
         this.deliveryCounter = 0;

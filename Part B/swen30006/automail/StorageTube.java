@@ -10,15 +10,24 @@ import java.util.Stack;
  */
 public class StorageTube {
 
-    public final int MAXIMUM_CAPACITY = 4;
-    public Stack<MailItem> tube;
+    private int MAXIMUM_CAPACITY;
+    private Stack<MailItem> tube;
     private MailItem deliveryItem;
 
     /**
      * Constructor for the storage tube
      */
-    public StorageTube(){
+    public StorageTube(Robot.RobotType type){
         this.tube = new Stack<MailItem>();
+        switch (type) {
+            case WEAK:
+            case STRONG:
+                MAXIMUM_CAPACITY = 4;
+                break;
+            case BIG:
+                MAXIMUM_CAPACITY = 6;
+                break;
+        }
     }
 
     /**
