@@ -15,10 +15,11 @@ public class Robot {
     protected final String id;
     /** Possible states the robot can be in */
     public enum RobotState { DELIVERING, WAITING, RETURNING }
+    public enum RobotType { WEAK, STRONG, BIG }
     public RobotState current_state;
     private int current_floor;
     private int destination_floor;
-    private boolean strong;
+    private RobotType type;
 
     
     private int deliveryCounter;
@@ -30,55 +31,17 @@ public class Robot {
      * @param behaviour governs selection of mail items for delivery and behaviour on priority arrivals
      * @param strong is whether the robot can carry heavy items
      */
-    public Robot(IRobotBehaviour behaviour, boolean strong){
+    public Robot(IRobotBehaviour behaviour, RobotType type){
     	id = "R" + hashCode();
         // current_state = RobotState.WAITING;
     	current_state = RobotState.RETURNING;
         current_floor = Building.MAILROOM_LOCATION;
         tube = new StorageTube();
         this.behaviour = behaviour;
-        this.strong = strong;
+        this.type = type;
         this.deliveryCounter = 0;
     }
 
-
-    /**
-     * Sets the route for the robot
-     */
-    private void setRoute() throws ItemTooHeavyException{
-        /** Pop the item from the StorageUnit */
-        tube.getDeliveryItem(true);
-        if (!strong && tube.getDeliveryItem(false).weight > 2000) throw new ItemTooHeavyException();
-        /** Set the destination floor */
-        destination_floor = tube.getDeliveryItem(false).getDestFloor();
-    }
-
-    /**
-     * Generic function that moves the robot towards the destination
-     * @param destination the floor towards which the robot is moving
-     */
-    private void moveTowards(int destination){
-        if(current_floor < destination){
-            current_floor++;
-        }
-        else{
-            current_floor--;
-        }
-    }
-    
-    /**
-     * Prints out the change in state
-     * @param nextState the state to which the robot is transitioning
-     */
-    private void changeState(RobotState nextState){
-    	if (current_state != nextState) {
-            System.out.printf("T: %3d > %11s changed from %s to %s%n", Clock.Time(), id, current_state, nextState);
-    	}
-    	current_state = nextState;
-    	if(nextState == RobotState.DELIVERING){
-            System.out.printf("T: %3d > %11s-> [%s]%n", Clock.Time(), id, tube.getDeliveryItem(false).toString());
-    	}
-    }
 
     /**
      * This is called on every time step
@@ -113,10 +76,10 @@ public class Robot {
     	current_state = state;
     }
 
-    public boolean getStrong() {
-    	return strong;
+    public RobotType getType() {
+        return type;
     }
-    
+
     public int getDeliveryCounter() {
     	return deliveryCounter;
     }
@@ -136,3 +99,4 @@ public class Robot {
 
 
 }
+

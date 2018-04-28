@@ -1,11 +1,6 @@
 package strategies;
 
-import automail.Building;
-import automail.Clock;
-import automail.IMailDelivery;
-import automail.MailItem;
-import automail.Robot;
-import automail.StorageTube;
+import automail.*;
 import automail.Robot.RobotState;
 import exceptions.ExcessiveDeliveryException;
 import exceptions.ItemTooHeavyException;
@@ -39,7 +34,7 @@ public interface IRobotBehaviour {
     public default void setRoute(Robot robot) throws ItemTooHeavyException{
         /** Pop the item from the StorageUnit */
         robot.getTube().getDeliveryItem(true);
-        if (!robot.getStrong() && robot.getTube().getDeliveryItem(false).getWeight() > 2000) throw new ItemTooHeavyException();
+        if ((robot.getType()!= Robot.RobotType.STRONG) && robot.getTube().getDeliveryItem(false).getWeight() > 2000) throw new ItemTooHeavyException();
         /** Set the destination floor */
         robot.setDestinationFloor(robot.getTube().getDeliveryItem(false).getDestFloor());
     }
@@ -73,7 +68,7 @@ public interface IRobotBehaviour {
                 }
             case WAITING:
                 /** Tell the sorter the robot is ready */
-                mailPool.fillStorageTube(tube, robot.getStrong());
+                mailPool.fillStorageTube(robot);
                 // System.out.println("Tube total size: "+tube.getTotalOfSizes());
                 /** If the StorageTube is ready and the Robot is waiting in the mailroom then start the delivery */
                 if(!tube.isEmpty()){

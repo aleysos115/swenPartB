@@ -2,23 +2,27 @@ package strategies;
 
 import java.util.*;
 
-import automail.Building;
-import automail.MailItem;
-import automail.PriorityMailItem;
-import automail.StorageTube;
+import automail.*;
 import exceptions.TubeFullException;
 
 public class WeakStrongMailPool implements IMailPool{
+
+
+	private Configuration config;
+
+
 	private LinkedList<MailItem> upper;  // weak robot will take this set
 	private LinkedList<MailItem> lower;  // strong robot will take this set
 	private int divider;
 	private static final int MAX_WEIGHT = 2000;
 
-	public WeakStrongMailPool(){
+	public WeakStrongMailPool(Configuration config){
 		// Start empty
 		upper = new LinkedList<MailItem>();
 		lower = new LinkedList<MailItem>();
 		divider = Building.FLOORS / 2;  // Top normal floor for strong robot
+
+		this.config = config;
 	}
 
 	private int priority(MailItem m) {
@@ -49,11 +53,26 @@ public class WeakStrongMailPool implements IMailPool{
 	}
 	
 	@Override
-	public void fillStorageTube(StorageTube tube, boolean strong) {
-		Queue<MailItem> q = strong ? lower : upper;
+	public void fillStorageTube(Robot robot) {
+
+		Queue<MailItem> q = null;
+
+		switch (robot.getType()) {
+			case STRONG:
+				q = lower;
+				break;
+			case BIG:
+				break;
+			case WEAK:
+				q = upper;
+				break;
+		}
+
+
+
 		try{
-			while(!tube.isFull() && !q.isEmpty()) {
-				tube.addItem(q.remove());  // Could group/order by floor taking priority into account - but already better than simple
+			while(!robot.getTube().isFull() && !q.isEmpty()) {
+				robot.getTube().addItem(q.remove());  // Could group/order by floor taking priority into account - but already better than simple
 			}
 		}
 		catch(TubeFullException e){
